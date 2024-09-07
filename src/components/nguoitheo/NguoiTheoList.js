@@ -91,7 +91,7 @@ const NguoiTheoList = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate('/chitiettinhtiennguoitheo')}
+                    onClick={() => navigate('/timkiemtinhtiennguoitheo')}
                 >
                     Chi Tiết Tính Tiền Người Theo
                 </Button>
