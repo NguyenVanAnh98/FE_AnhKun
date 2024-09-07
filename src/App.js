@@ -44,7 +44,7 @@ function App() {
                     <Route path="/tinhtienIbet" element={<TinhTienIbet />} />
                     <Route path="/tinhtienSbo" element={<TinhTienSbo />} />
                     <Route path="/timkiemtinhtiennguoitheo" element={<NguoiTheoSearch />} />
-                    <Route path="/chitiettinhtiennguoitheo" element={<ChiTietTinhTienNguoiTheo />} />
+                    {/* <Route path="/chitiettinhtiennguoitheo" element={<ChiTietTinhTienNguoiTheo />} /> */}
 
                 </Routes>
             </Container>
@@ -53,3 +53,5 @@ function App() {
 }
 
 export default App;
+
+/////////////////////////////////////////////////////////////////////////////
