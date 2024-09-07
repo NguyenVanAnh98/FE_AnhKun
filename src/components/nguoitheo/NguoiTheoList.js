@@ -13,17 +13,16 @@ import {
     Box
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ManageNguoiTheo from './ManageNguoiTheo'; // Import component form để thêm, sửa, xóa người theo
-import ChiTietNguoiTheo from './ChiTietNguoiTheo'; // Import component để xem chi tiết người theo
+import ManageNguoiTheo from './ManageNguoiTheo';
+import ChiTietNguoiTheo from './ChiTietNguoiTheo';
 
 const NguoiTheoList = () => {
     const [nguoiTheoList, setNguoiTheoList] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
     const [openManage, setOpenManage] = useState(false);
     const [openChiTiet, setOpenChiTiet] = useState(false);
-    const [formMode, setFormMode] = useState('add'); // 'add', 'edit', 'delete'
-
-    const navigate = useNavigate(); // Add useNavigate hook
+    const [formMode, setFormMode] = useState('add');
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/nguoitheo')
@@ -41,13 +40,19 @@ const NguoiTheoList = () => {
         setFormMode(mode);
         setOpenManage(true);
     };
-    const handleCloseManage = () => setOpenManage(false);
+
+    const handleCloseManage = () => {
+        setOpenManage(false);
+    };
 
     const handleOpenChiTiet = (id) => {
         setSelectedId(id);
         setOpenChiTiet(true);
     };
-    const handleCloseChiTiet = () => setOpenChiTiet(false);
+
+    const handleCloseChiTiet = () => {
+        setOpenChiTiet(false);
+    };
 
     const handleAdd = (newNguoiTheo) => {
         setNguoiTheoList([...nguoiTheoList, newNguoiTheo]);
@@ -75,7 +80,7 @@ const NguoiTheoList = () => {
                     DANH SÁCH NGƯỜI THEO
                 </Typography>
             </Box>
-            <Box mb={2}>
+            <Box mb={2} display="flex" justifyContent="space-between">
                 <Button
                     variant="contained"
                     color="primary"
@@ -83,44 +88,61 @@ const NguoiTheoList = () => {
                 >
                     Thêm Người Theo
                 </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate('/chitiettinhtiennguoitheo')}
+                >
+                    Chi Tiết Tính Tiền Người Theo
+                </Button>
             </Box>
             <Table>
                 <TableHead>
                     <TableRow>
                         <TableCell>Mã Người Theo</TableCell>
                         <TableCell>Tên</TableCell>
+                        <TableCell>Tiền Cũ</TableCell>
                         <TableCell>Hành Động</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {nguoiTheoList.map(nguoiTheo => (
-                        <TableRow key={nguoiTheo.id}>
-                            <TableCell>{nguoiTheo.id}</TableCell>
-                            <TableCell>{nguoiTheo.name}</TableCell>
-                            <TableCell>
-                                <Button
-                                    onClick={() => handleOpenChiTiet(nguoiTheo.id)}
-                                    color="info"
-                                    style={{ marginRight: 8 }}
-                                >
-                                    Xem Chi Tiết
-                                </Button>
-                                <Button
-                                    onClick={() => handleOpenManage(nguoiTheo.id, 'edit')}
-                                    color="secondary"
-                                    style={{ marginRight: 8 }}
-                                >
-                                    Sửa
-                                </Button>
-                                <Button
-                                    onClick={() => handleOpenManage(nguoiTheo.id, 'delete')}
-                                    color="error"
-                                >
-                                    Xóa
-                                </Button>
+                    {nguoiTheoList.length > 0 ? (
+                        nguoiTheoList.map(nguoiTheo => (
+                            <TableRow key={nguoiTheo.id}>
+                                <TableCell>{nguoiTheo.id}</TableCell>
+                                <TableCell>{nguoiTheo.name}</TableCell>
+                                <TableCell>{nguoiTheo.oldMoney}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        onClick={() => handleOpenChiTiet(nguoiTheo.id)}
+                                        color="info"
+                                        style={{ marginRight: 8 }}
+                                    >
+                                        Xem Chi Tiết
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleOpenManage(nguoiTheo.id, 'edit')}
+                                        color="secondary"
+                                        style={{ marginRight: 8 }}
+                                    >
+                                        Sửa
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleOpenManage(nguoiTheo.id, 'delete')}
+                                        color="error"
+                                    >
+                                        Xóa
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={4} align="center">
+                                Không có dữ liệu
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
 

@@ -40,6 +40,7 @@ const KhachHangList = () => {
         axios.get('http://localhost:8080/api/khachhang')
             .then(response => {
                 setKhachHangList(response.data);
+               
             })
             .catch(error => {
                 console.error('Error fetching customers:', error);
@@ -47,9 +48,11 @@ const KhachHangList = () => {
             });
     };
 
-    const handleDialogOpen = (type, id = null) => {
+    const handleDialogOpen = (type, id) => {
         setSelectedKhachHangId(id);
         setOpenDialog(prev => ({ ...prev, [type]: true }));
+        console.log(type,id);
+        
     };
 
     const handleDialogClose = (type) => {
@@ -61,6 +64,8 @@ const KhachHangList = () => {
             axios.delete(`http://localhost:8080/api/khachhang/${id}`)
                 .then(() => {
                     setKhachHangList(prevList => prevList.filter(kh => kh.id !== id));
+                    
+                    
                 })
                 .catch(error => {
                     console.error('Error deleting customer:', error);
@@ -100,22 +105,9 @@ const KhachHangList = () => {
                     >
                         Thêm Khách Hàng
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate('/nguoitheo')}
-                        style={{ marginRight: '1cm' }}
-                    >
-                        Người Theo
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate('/loai')}
-                        style={{ marginRight: '1cm' }}
-                    >
-                        Loại
-                    </Button>
+                    
+                    
+                  
                 </Box>
                 <Button
                     variant="contained"
@@ -128,7 +120,7 @@ const KhachHangList = () => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Mã Khách Hàng</TableCell>
+                        <TableCell >Mã Khách Hàng</TableCell>
                         <TableCell>Tên</TableCell>
                         <TableCell>Giá Đồ</TableCell>
                         <TableCell>Giá Banh</TableCell>

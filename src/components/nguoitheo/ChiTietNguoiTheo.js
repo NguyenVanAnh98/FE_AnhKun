@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 const ChiTietNguoiTheo = ({ id, onClose }) => {
-    const [nguoiTheoDetail, setNguoiTheoDetail] = useState(null);
+    const [nguoiTheoDetail, setNguoiTheoDetail] = useState("");
 
     useEffect(() => {
         // Lấy thông tin chi tiết của người theo, bao gồm danh sách khách hàng và xu theo
