@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// ThemKhachHang.js
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
     DialogTitle,
@@ -29,9 +30,17 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
     const [nguoiTheoList, setNguoiTheoList] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/nguoitheo')
-            .then(response => setNguoiTheoList(response.data))
-            .catch(error => console.error('Error fetching nguoi theo list:', error));
+        const fetchNguoiTheoList = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/nguoitheo');
+                setNguoiTheoList(response.data);
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách người theo:', error);
+                alert('Không thể lấy danh sách người theo. Vui lòng thử lại sau.');
+            }
+        };
+
+        fetchNguoiTheoList();
     }, []);
 
     const handleInputChange = (index, e) => {
@@ -60,23 +69,35 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
         }));
     };
 
-    const handleAddCustomer = () => {
-        const { maKhachHang, name, loaiId, giaBanh, giaDo, giaGame } = formData;
+    const validateFormData = () => {
+        const { maKhachHang, name, loaiId, giaBanh, giaDo, giaGame, theoXuKHReqDTOS } = formData;
         if (!maKhachHang || !name || !loaiId || !giaBanh || !giaDo || !giaGame) {
             alert("Vui lòng điền tất cả các trường bắt buộc.");
-            return;
+            return false;
         }
 
-        axios.post('http://localhost:8080/api/khachhang', formData)
-            .then(() => {
-                onAdd();
-                onClose();
-            })
-            .catch(error => {
-                const errorMessage = error.response?.data?.message || error.message;
-                console.error('API request failed:', error);
-                alert(`Có lỗi xảy ra khi thêm khách hàng: ${errorMessage}`);
-            });
+        for (const theoXu of theoXuKHReqDTOS) {
+            if (!theoXu.idNguoiTheo || !theoXu.xuTheo) {
+                alert("Vui lòng điền đầy đủ thông tin cho Người Theo.");
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const handleAddCustomer = async () => {
+        if (!validateFormData()) return;
+
+        try {
+            await axios.post('http://localhost:8080/api/khachhang', formData);
+            if (onAdd) onAdd(); // Đảm bảo onAdd tồn tại và là một hàm
+            onClose();
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error('Lỗi khi thêm khách hàng:', error);
+            alert(`Có lỗi xảy ra khi thêm khách hàng: ${errorMessage}`);
+        }
     };
 
     return (
@@ -146,7 +167,6 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
                     value={formData.giaGame}
                     onChange={handleFormChange}
                 />
-                
                 <div>
                     {formData.theoXuKHReqDTOS.map((item, index) => (
                         <Box key={index} mb={2} display="flex" alignItems="center">

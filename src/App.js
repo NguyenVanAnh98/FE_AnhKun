@@ -17,14 +17,17 @@ import TheoXuKhachList from "./components/theoxukhach/TheoXuKhachList";
 import ThemTheoXuKhach from "./components/theoxukhach/ThemTheoXuKhach";
 import TinhTienIbet from './components/tinhtien/TinhTienIbet';
 import TinhTienSbo from './components/tinhtien/TinhTienSbo';
-
+import ChiTietTinhTienNguoiTheo from './components/tinhtien/ChiTietTinhTienNguoiTheo';
+import TrangChu from './components/trangchu/TrangChu'
+import NguoiTheoSearch from './components/nguoitheo/NguoiTheoSeach'
 
 function App() {
     return (
         <Router>
             <Container>
                 <Routes>
-                    <Route path="/" element={<KhachHangList />} />
+                <Route path="/" element={<TrangChu />} />
+                    <Route path="/khachhang" element={<KhachHangList />} />
                     <Route path="/nguoitheo" element={<NguoiTheoList />} />
                     <Route path="/them-khach-hang" element={<ThemKhachHang />} />
                     <Route path="/edit-khach-hang/:id" element={<EditKhachHang />} />
@@ -38,9 +41,11 @@ function App() {
                     <Route path="/theoxukhach" element={<TheoXuKhachList />} />
                     <Route path="/them-theo-xu-khach" element={<ThemTheoXuKhach />} />
                     <Route path="/edit-theo-xu-khach/:id" element={<EditTheoXuKhach />} />
-                    <Route path="/tinhtienIbet" element={<TinhTienIbet/>} />
-                    <Route path="/tinhtienSbo" element={<TinhTienSbo/>} />
-                  
+                    <Route path="/tinhtienIbet" element={<TinhTienIbet />} />
+                    <Route path="/tinhtienSbo" element={<TinhTienSbo />} />
+                    <Route path="/timkiemtinhtiennguoitheo" element={<NguoiTheoSearch />} />
+                    <Route path="/chitiettinhtiennguoitheo" element={<ChiTietTinhTienNguoiTheo />} />
+
                 </Routes>
             </Container>
         </Router>

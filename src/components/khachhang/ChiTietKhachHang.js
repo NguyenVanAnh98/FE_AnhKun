@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 const ChiTietKhachHang = ({ khachHangId, onClose }) => {
-    const [khachHang, setKhachHang] = useState(null);
+    const [khachHang, setKhachHang] = useState("");
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/khachhang/${khachHangId}`)
