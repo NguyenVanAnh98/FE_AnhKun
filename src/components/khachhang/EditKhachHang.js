@@ -8,19 +8,15 @@ import {
     DialogActions,
     TextField,
     Typography,
-    MenuItem,
-    Select,
-    FormControl,
-    InputLabel,
+    IconButton,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
-    IconButton,
-    Box
+    FormControl,
 } from '@mui/material';
-import { Add, Delete, AddCircle as AddCircleIcon, RemoveCircle as RemoveCircleIcon } from '@mui/icons-material';
+import { AddCircle as AddCircleIcon, RemoveCircle as RemoveCircleIcon } from '@mui/icons-material';
 
 const EditKhachHang = ({ id, onClose, onUpdate }) => {
     const [khachHang, setKhachHang] = useState(null);
@@ -29,7 +25,6 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
     const [giaBanh, setGiaBanh] = useState('');
     const [giaGame, setGiaGame] = useState('');
     const [loai, setLoai] = useState("");
-    const [danhSachLoai, setDanhSachLoai] = useState([]);
     const [danhSachTheoXu, setDanhSachTheoXu] = useState([]);
     const [selectedTheoXu, setSelectedTheoXu] = useState([]);
 
@@ -38,8 +33,6 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
         axios.get(`http://localhost:8080/api/khachhang/${id}`)
             .then(response => {
                 const data = response.data;
-                console.log(data);
-                
                 setKhachHang(data);
                 setName(data.name || '');
                 setGiaDo(data.giaDo || '');
@@ -52,27 +45,7 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
                 console.error('Error fetching customer details:', error);
                 alert('Có lỗi xảy ra khi lấy thông tin khách hàng: ' + error.message);
             });
-
-        // Lấy danh sách loại
-        // axios.get('http://localhost:8080/api/loai')
-        //     .then(response => {
-        //         setDanhSachLoai(response.data);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error fetching Loai list:', error);
-        //         alert('Có lỗi xảy ra khi lấy danh sách Loai: ' + error.message);
-        //     });
-
-        // // Lấy danh sách Theo Xu Khách
-        // axios.get('http://localhost:8080/api/theoxukhach')
-        //     .then(response => {
-        //         setDanhSachTheoXu(response.data);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error fetching Theo Xu Khach list:', error);
-        //         alert('Có lỗi xảy ra khi lấy danh sách Theo Xu Khách: ' + error.message);
-        //     });
-    }, []);
+    }, [id]);
 
     const handleUpdate = () => {
         const updatedKhachHang = {
@@ -80,13 +53,17 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
             giaDo,
             giaBanh,
             giaGame,
-            loai: danhSachLoai.find(loaiItem => loaiItem.tenLoai === loai),
-            theoXuKhachs: selectedTheoXu
+            loai: danhSachTheoXu.find(loaiItem => loaiItem.tenLoai === loai),
+            theoXuKhachs: selectedTheoXu,
         };
 
         axios.put(`http://localhost:8080/api/khachhang/${id}`, updatedKhachHang)
             .then(() => {
-                onUpdate(); // Notify parent component to refresh the list
+                if (onUpdate) {
+                    onUpdate(); // Notify parent component to refresh the list
+                } else {
+                    console.error("onUpdate is not a function");
+                }
                 onClose();
             })
             .catch(error => {
@@ -159,16 +136,6 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
                     disabled
                 />
 
-                {/* <FormControl fullWidth margin="normal">
-                    <InputLabel>Loại</InputLabel>
-                    
-                        
-                            <MenuItem key={item.id} value={item.tenLoai}>
-                                {item.tenLoai}
-                            </MenuItem>
-                        
-                </FormControl> */}
-
                 <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
                     Danh Sách Theo Xu Khách
                 </Typography>
@@ -185,14 +152,14 @@ const EditKhachHang = ({ id, onClose, onUpdate }) => {
                             <TableRow key={index}>
                                 <TableCell>
                                     <FormControl fullWidth margin="dense">
-                                    <TextField
-                                        name="người theo"
-                                        type="text"
-                                        value={xuKhach.tenKhachTheo}
-                                        onChange={(e) => handleTheoXuChange(e, index)}
-                                        fullWidth
-                                        disabled
-                                    />
+                                        <TextField
+                                            name="người theo"
+                                            type="text"
+                                            value={xuKhach.tenKhachTheo}
+                                            onChange={(e) => handleTheoXuChange(e, index)}
+                                            fullWidth
+                                            disabled
+                                        />
                                     </FormControl>
                                 </TableCell>
                                 <TableCell>

@@ -14,48 +14,48 @@ import {
     TableRow
 } from '@mui/material';
 
-const ChiTietNguoiTheo = ({ id, onClose }) => {
-    const [nguoiTheoDetail, setNguoiTheoDetail] = useState("");
+const ChiTietCoDong = ({ id, onClose }) => {
+    const [coDongDetail, setCoDongDetail] = useState("");
 
     useEffect(() => {
         // Lấy thông tin chi tiết của người theo, bao gồm danh sách khách hàng và xu theo
-        axios.get(`http://localhost:8080/api/theoxukhach/${id}`)
+        axios.get(`http://localhost:8080/api/phantramcodong/${id}`)
             .then(response => {
-                setNguoiTheoDetail(response.data);
+                setCoDongDetail(response.data);
             })
             .catch(error => {
                 console.error('Error fetching person details:', error);
-                alert('Có lỗi xảy ra khi lấy chi tiết người theo: ' + error.message);
+                alert('Có lỗi xảy ra khi lấy chi tiết cổ đông: ' + error.message);
             });
     }, [id]);
 
-    if (!nguoiTheoDetail) return null;
+    if (!coDongDetail) return null;
 
     return (
         <>
-            <DialogTitle>Xem Chi Tiết Người Theo</DialogTitle>
+            <DialogTitle>Xem Chi Tiết Cổ Đông</DialogTitle>
             <DialogContent>
                 <Box mb={2}>
-                    <Typography variant="h6">Tên Người Theo:</Typography>
-                    <Typography>{nguoiTheoDetail.name}</Typography>
+                    <Typography variant="h6">Tên Cổ Đông:</Typography>
+                    <Typography>{coDongDetail.name}</Typography>
                 </Box>
                 <Box mb={2}>
-                    <Typography variant="h6">Danh Sách Khách Hàng và Xu Theo:</Typography>
+                    <Typography variant="h6">Danh Sách Khách Hàng và Phần Trăm :</Typography>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Tên Khách Hàng</TableCell>
-                                <TableCell>Số Lượng Xu Theo</TableCell>
+                                <TableCell>Phần Trăm Theo</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {nguoiTheoDetail.map((khachHang, index) => (
+                            {coDongDetail.map((khachHang, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{khachHang.khachHang.name}</TableCell>
-                                    <TableCell>{khachHang.xuTheo}</TableCell>
+                                    <TableCell>{khachHang.phanTramTheo}</TableCell>
                                 </TableRow>
                             ))}
-                            {nguoiTheoDetail.length === 0 && (
+                            {coDongDetail.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={2}>Không có dữ liệu</TableCell>
                                 </TableRow>
@@ -73,4 +73,4 @@ const ChiTietNguoiTheo = ({ id, onClose }) => {
     );
 };
 
-export default ChiTietNguoiTheo;
+export default ChiTietCoDong;

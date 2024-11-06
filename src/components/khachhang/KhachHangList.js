@@ -40,7 +40,6 @@ const KhachHangList = () => {
         axios.get('http://localhost:8080/api/khachhang')
             .then(response => {
                 setKhachHangList(response.data);
-               
             })
             .catch(error => {
                 console.error('Error fetching customers:', error);
@@ -50,9 +49,14 @@ const KhachHangList = () => {
 
     const handleDialogOpen = (type, id) => {
         setSelectedKhachHangId(id);
-        setOpenDialog(prev => ({ ...prev, [type]: true }));
-        console.log(type,id);
-        
+        if (type === 'chungChi') {
+            navigate('/chungchikhachhang'); // Điều hướng đến trang ChungChiKhachHang
+        } else if (type === 'chiTiet') {
+            navigate(`/timkiemtinhtienkhachhang`); // Điều hướng đến trang timkiemtinhtienkhachhang
+        } else {
+            setOpenDialog(prev => ({ ...prev, [type]: true }));
+        }
+        console.log(type, id);
     };
 
     const handleDialogClose = (type) => {
@@ -64,8 +68,6 @@ const KhachHangList = () => {
             axios.delete(`http://localhost:8080/api/khachhang/${id}`)
                 .then(() => {
                     setKhachHangList(prevList => prevList.filter(kh => kh.id !== id));
-                    
-                    
                 })
                 .catch(error => {
                     console.error('Error deleting customer:', error);
@@ -105,22 +107,38 @@ const KhachHangList = () => {
                     >
                         Thêm Khách Hàng
                     </Button>
-                    
-                    
-                  
                 </Box>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleDialogOpen('tinhTien')}
-                >
-                    Tính Tiền
-                </Button>
+
+                <Box display="flex" alignItems="center">
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDialogOpen('tinhTien')}
+                        style={{ marginRight: '1cm' }} // Khoảng cách 1cm
+                    >
+                        Tính Tiền
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDialogOpen('chungChi')}  // Điều hướng đến trang ChungChiKhachHang
+                        style={{ marginRight: '1cm' }}
+                    >
+                        Chung - Chi
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDialogOpen('chiTiet')}
+                    >
+                        Chi Tiết Tính Tiền
+                    </Button>
+                </Box>
             </Box>
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell >Mã Khách Hàng</TableCell>
+                        <TableCell>Mã Khách Hàng</TableCell>
                         <TableCell>Tên</TableCell>
                         <TableCell>Giá Đồ</TableCell>
                         <TableCell>Giá Banh</TableCell>

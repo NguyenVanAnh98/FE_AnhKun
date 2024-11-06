@@ -11,15 +11,23 @@ import ChiTietKhachHang from './components/khachhang/ChiTietKhachHang'; // Đư�
 import ManageNguoiTheo from './components/nguoitheo/ManageNguoiTheo'; // Đường dẫn tới component ManageNguoiTheo
 import LoaiList from './components/loai/LoaiList'; // Đường dẫn tới component LoaiList
 import ManageLoai from './components/loai/MagageLoai';
-import TheoXuKhachManager from "./components/theoxukhach/TheoXuKhachManager";
+import KhachHangSearch from "./components/khachhang/KhachHangSeach";
 import EditTheoXuKhach from "./components/theoxukhach/EditTheoXuKhach";
 import TheoXuKhachList from "./components/theoxukhach/TheoXuKhachList";
 import ThemTheoXuKhach from "./components/theoxukhach/ThemTheoXuKhach";
 import TinhTienIbet from './components/tinhtien/TinhTienIbet';
 import TinhTienSbo from './components/tinhtien/TinhTienSbo';
-import ChiTietTinhTienNguoiTheo from './components/tinhtien/ChiTietTinhTienNguoiTheo';
 import TrangChu from './components/trangchu/TrangChu'
 import NguoiTheoSearch from './components/nguoitheo/NguoiTheoSeach'
+import ChungChiKhachHang from './components/khachhang/ChungChiKhachHang'
+import ChungChiNguoiTheo from './components/nguoitheo/ChungChiNguoiTheo'
+import ManageCoDong from './components/codong/ManageCoDong'
+import CoDongList from './components/codong/CoDongList'
+import CoDongSeach from './components/codong/CoDongSeach'
+import ChungChiCoDong from './components/codong/ChungChiCoDong';
+import ChiTietChungChiNguoiTheo from './components/nguoitheo/ChiTietChungChiNguoiTheo';
+
+
 
 function App() {
     return (
@@ -44,7 +52,18 @@ function App() {
                     <Route path="/tinhtienIbet" element={<TinhTienIbet />} />
                     <Route path="/tinhtienSbo" element={<TinhTienSbo />} />
                     <Route path="/timkiemtinhtiennguoitheo" element={<NguoiTheoSearch />} />
-                    {/* <Route path="/chitiettinhtiennguoitheo" element={<ChiTietTinhTienNguoiTheo />} /> */}
+                    <Route path="/timkiemtinhtienkhachhang" element={<KhachHangSearch />} />
+                    <Route path="/chungchikhachhang" element={<ChungChiKhachHang />} />
+                    <Route path="/chungchinguoitheo" element={<ChungChiNguoiTheo />} />
+                    <Route path="/manage-co-dong/:id" element={<ManageCoDong />} />
+                    <Route path="/codong" element={<CoDongList />} />
+                    <Route path="/timkiemtinhtiencodong" element={<CoDongSeach />} />
+                    <Route path="/chungchinguoitheo" element={<ChungChiNguoiTheo />} />
+                    <Route path="/chungchicodong" element={<ChungChiCoDong />} />
+                    <Route path="/chitietchungchinguoitheo" element={<ChiTietChungChiNguoiTheo />} />
+
+
+
 
                 </Routes>
             </Container>
@@ -54,4 +73,3 @@ function App() {
 
 export default App;
 
-/////////////////////////////////////////////////////////////////////////////

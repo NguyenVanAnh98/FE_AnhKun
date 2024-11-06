@@ -1,4 +1,3 @@
-// ThemKhachHang.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -24,10 +23,12 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
         giaBanh: '',
         giaDo: '',
         giaGame: '',
-        theoXuKHReqDTOS: [{ idNguoiTheo: '', xuTheo: '' }]
+        theoXuKHReqDTOS: [{ idNguoiTheo: '', xuTheo: '' }],
+        phanTramCoDongReqDTOS: [{ idCoDong: '', phanTramTheo: '', tenCoDong: '' }]
     });
 
     const [nguoiTheoList, setNguoiTheoList] = useState([]);
+    const [coDongList, setCoDongList] = useState([]);
 
     useEffect(() => {
         const fetchNguoiTheoList = async () => {
@@ -40,14 +41,25 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
             }
         };
 
+        const fetchCoDongList = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/codong');
+                setCoDongList(response.data);
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách cổ đông:', error);
+                alert('Không thể lấy danh sách cổ đông. Vui lòng thử lại sau.');
+            }
+        };
+
         fetchNguoiTheoList();
+        fetchCoDongList();
     }, []);
 
-    const handleInputChange = (index, e) => {
+    const handleInputChange = (index, e, field) => {
         const { name, value } = e.target;
-        const updatedTheoXuKH = [...formData.theoXuKHReqDTOS];
-        updatedTheoXuKH[index] = { ...updatedTheoXuKH[index], [name]: value };
-        setFormData(prevState => ({ ...prevState, theoXuKHReqDTOS: updatedTheoXuKH }));
+        const updatedData = [...formData[field]];
+        updatedData[index] = { ...updatedData[index], [name]: value };
+        setFormData(prevState => ({ ...prevState, [field]: updatedData }));
     };
 
     const handleFormChange = (e) => {
@@ -55,22 +67,22 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleAddNguoiTheo = () => {
+    const handleAddRow = (field, defaultValue) => {
         setFormData(prevState => ({
             ...prevState,
-            theoXuKHReqDTOS: [...prevState.theoXuKHReqDTOS, { idNguoiTheo: '', xuTheo: '' }]
+            [field]: [...prevState[field], defaultValue]
         }));
     };
 
-    const handleRemoveNguoiTheo = (index) => {
+    const handleRemoveRow = (index, field) => {
         setFormData(prevState => ({
             ...prevState,
-            theoXuKHReqDTOS: prevState.theoXuKHReqDTOS.filter((_, i) => i !== index)
+            [field]: prevState[field].filter((_, i) => i !== index)
         }));
     };
 
     const validateFormData = () => {
-        const { maKhachHang, name, loaiId, giaBanh, giaDo, giaGame, theoXuKHReqDTOS } = formData;
+        const { maKhachHang, name, loaiId, giaBanh, giaDo, giaGame, theoXuKHReqDTOS, phanTramCoDongReqDTOS } = formData;
         if (!maKhachHang || !name || !loaiId || !giaBanh || !giaDo || !giaGame) {
             alert("Vui lòng điền tất cả các trường bắt buộc.");
             return false;
@@ -79,6 +91,13 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
         for (const theoXu of theoXuKHReqDTOS) {
             if (!theoXu.idNguoiTheo || !theoXu.xuTheo) {
                 alert("Vui lòng điền đầy đủ thông tin cho Người Theo.");
+                return false;
+            }
+        }
+
+        for (const coDong of phanTramCoDongReqDTOS) {
+            if (!coDong.idCoDong || !coDong.phanTramTheo) {
+                alert("Vui lòng điền đầy đủ thông tin cho Cổ Đông.");
                 return false;
             }
         }
@@ -167,6 +186,7 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
                     value={formData.giaGame}
                     onChange={handleFormChange}
                 />
+                {/* Phần "Người Theo" */}
                 <div>
                     {formData.theoXuKHReqDTOS.map((item, index) => (
                         <Box key={index} mb={2} display="flex" alignItems="center">
@@ -175,7 +195,7 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
                                 <Select
                                     name="idNguoiTheo"
                                     value={item.idNguoiTheo}
-                                    onChange={(e) => handleInputChange(index, e)}
+                                    onChange={(e) => handleInputChange(index, e, 'theoXuKHReqDTOS')}
                                     label="Người Theo"
                                 >
                                     {nguoiTheoList.map(nguoiTheo => (
@@ -192,29 +212,71 @@ const ThemKhachHang = ({ onClose, onAdd }) => {
                                 type="number"
                                 variant="outlined"
                                 value={item.xuTheo}
-                                onChange={(e) => handleInputChange(index, e)}
+                                onChange={(e) => handleInputChange(index, e, 'theoXuKHReqDTOS')}
                                 style={{ marginLeft: 8 }}
                             />
-                            <IconButton onClick={() => handleRemoveNguoiTheo(index)} color="error" style={{ marginLeft: 8 }}>
+                            <IconButton onClick={() => handleRemoveRow(index, 'theoXuKHReqDTOS')} color="error" style={{ marginLeft: 8 }}>
                                 <RemoveCircleIcon />
                             </IconButton>
                         </Box>
                     ))}
                     <Button
-                        onClick={handleAddNguoiTheo}
+                        onClick={() => handleAddRow('theoXuKHReqDTOS', { idNguoiTheo: '', xuTheo: '' })}
                         color="primary"
                         startIcon={<AddCircleIcon />}
                     >
                         Thêm Người Theo
                     </Button>
                 </div>
+                {/* Phần "Cổ Đông" */}
+                <div>
+                    {formData.phanTramCoDongReqDTOS.map((item, index) => (
+                        <Box key={index} mb={2} display="flex" alignItems="center">
+                            <FormControl fullWidth margin="dense">
+                                <InputLabel>Cổ Đông</InputLabel>
+                                <Select
+                                    name="idCoDong"
+                                    value={item.idCoDong}
+                                    onChange={(e) => handleInputChange(index, e, 'phanTramCoDongReqDTOS')}
+                                    label="Cổ Đông"
+                                >
+                                    {coDongList.map(coDong => (
+                                        <MenuItem key={coDong.id} value={coDong.id}>
+                                            {coDong.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                margin="dense"
+                                name="phanTramTheo"
+                                label="Phần Trăm Theo"
+                                type="number"
+                                variant="outlined"
+                                value={item.phanTramTheo}
+                                onChange={(e) => handleInputChange(index, e, 'phanTramCoDongReqDTOS')}
+                                style={{ marginLeft: 8 }}
+                            />
+                            <IconButton onClick={() => handleRemoveRow(index, 'phanTramCoDongReqDTOS')} color="error" style={{ marginLeft: 8 }}>
+                                <RemoveCircleIcon />
+                            </IconButton>
+                        </Box>
+                    ))}
+                    <Button
+                        onClick={() => handleAddRow('phanTramCoDongReqDTOS', { idCoDong: '', phanTramTheo: '' })}
+                        color="primary"
+                        startIcon={<AddCircleIcon />}
+                    >
+                        Thêm Cổ Đông
+                    </Button>
+                </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary">
+                <Button onClick={onClose} color="secondary">
                     Hủy
                 </Button>
                 <Button onClick={handleAddCustomer} color="primary">
-                    Thêm
+                    Thêm Khách Hàng
                 </Button>
             </DialogActions>
         </>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button,TextField, Container, Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Grid } from '@mui/material';
+import { Button, TextField, Container, Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Grid } from '@mui/material';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ export default function Tinhtien2() {
     const [endDate, setEndDate] = useState('');
     const [tyGiaTuan, setTiGiaTuan] = useState('');
     const navigate = useNavigate();
+    
     const handleInputChange = (index, field, value) => {
         const newCustomerData = [...customerData];
         newCustomerData[index][field] = value;
@@ -29,6 +30,7 @@ export default function Tinhtien2() {
                 setCustomers(response.data);
                 setCustomerData(response.data.map(customer => ({
                     idKH: customer.id,
+                    maKhachHang: '',
                     anThua: '',
                     coBanh: '',
                     coGame: '',
@@ -48,18 +50,22 @@ export default function Tinhtien2() {
             });
     }, []);
     
-    const handleSubmit =  () => {
+    const handleSubmit = () => {
         console.log(customerData);
         console.log(startDate);
         console.log(endDate);
         console.log(tyGiaTuan);
-        axios.post('http://localhost:8080/api/tinhtien/save', customerData).then(response => {
-            alert("Đã lưu!")
-            navigate("/")
-        })
-
-        
+        axios.post(`http://localhost:8080/api/tinhtien/save/${startDate}/${endDate}`, customerData)
+            .then(response => {
+                alert("Đã lưu!");
+                navigate("/");
+            })
+            .catch(error => {
+                console.error('Error saving data:', error);
+                alert('Có lỗi xảy ra khi lưu dữ liệu: ' + error.message);
+            });
     }
+
     return (
         <Container>
             <Typography variant="h4" align="center" gutterBottom>Tính tiền IBET</Typography>
@@ -78,7 +84,7 @@ export default function Tinhtien2() {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-InputLabelProps={{ shrink: true }}
+                    InputLabelProps={{ shrink: true }}
                     fullWidth
                     style={{ marginRight: 16 }}
                 />
@@ -93,6 +99,7 @@ InputLabelProps={{ shrink: true }}
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>Mã Khách Hàng</TableCell> {/* Cột mã khách hàng */}
                         <TableCell>Tên Khách Hàng</TableCell>
                         <TableCell>Tổng cộng Banh</TableCell>
                         <TableCell>Tổng cộng Khách Hàng</TableCell>
@@ -102,6 +109,7 @@ InputLabelProps={{ shrink: true }}
                 <TableBody>
                     {customers.map((c, index) => (
                         <TableRow key={c.id}>
+                            <TableCell>{c.maKhachHang}</TableCell> {/* Hiển thị mã khách hàng */}
                             <TableCell>{c.name}</TableCell>
                             <TableCell>
                                 <Grid container spacing={2} direction="column">
@@ -134,14 +142,15 @@ InputLabelProps={{ shrink: true }}
                                     </Grid>
                                     <Grid item xs={12}>
                                         <strong>
-                                        Tổng cộng: {
-                                        ((parseFloat(customerData[index].anThua)*c.giaDo*1000 || 0) + 
-                                        (parseFloat(customerData[index].coBanh)*c.giaDo*c.giaBanh || 0) + 
-                                        (parseFloat(customerData[index].coGame)*c.giaGame*c.giaDo || 0)).toLocaleString('de-DE') +"VND"
-                                    }
+                                            Tổng cộng: {
+                                                Math.round(
+                                                    (parseFloat(customerData[index].anThua) * c.giaDo * 1000 || 0) + 
+                                                    (parseFloat(customerData[index].coBanh) * c.giaDo * c.giaBanh || 0) + 
+                                                    (parseFloat(customerData[index].coGame) * c.giaGame * c.giaDo || 0)
+                                                ).toLocaleString('de-DE') + " VND"
+                                            }
                                         </strong>
                                     </Grid>
-
                                 </Grid>
                             </TableCell>
                             <TableCell>
@@ -184,14 +193,16 @@ InputLabelProps={{ shrink: true }}
                                     </Grid>
                                     <Grid item xs={12}>
                                         <strong>
-Tổng cộng khách hàng: {
-                                                ((parseFloat(customerData[index].tiSo) || 0)+
-                                                (parseFloat(customerData[index].soDe) || 0)+
-                                                (parseFloat(customerData[index].tienUng) || 0)+
-                                                (parseFloat(customerData[index].tienGop) || 0)+
-                                                (parseFloat(customerData[index].anThua)*c.giaDo*1000 || 0) + 
-                                                (parseFloat(customerData[index].coBanh)*c.giaDo*c.giaBanh || 0) + 
-                                                (parseFloat(customerData[index].coGame)*c.giaGame*c.giaDo || 0)).toLocaleString('de-DE') +"VND"
+                                            Tổng cộng khách hàng: {
+                                                Math.round(
+                                                    (parseFloat(customerData[index].tiSo) || 0) +
+                                                    (parseFloat(customerData[index].soDe) || 0) +
+                                                    (parseFloat(customerData[index].tienUng) || 0) +
+                                                    (parseFloat(customerData[index].tienGop) || 0) +
+                                                    (parseFloat(customerData[index].anThua) * c.giaDo * 1000 || 0) + 
+                                                    (parseFloat(customerData[index].coBanh) * c.giaDo * c.giaBanh || 0) + 
+                                                    (parseFloat(customerData[index].coGame) * c.giaGame * c.giaDo || 0)
+                                                ).toLocaleString('de-DE') + " VND"
                                             }
                                         </strong>
                                     </Grid>
@@ -209,7 +220,7 @@ Tổng cộng khách hàng: {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <strong>    
+                                        <strong>
                                             Tổng cộng công ty: {
                                                 ((parseFloat(customerData[index].comm) + parseFloat(customerData[index].anThua)) * tyGiaTuan * c.loai.phanTram/100 || 0).toLocaleString('de-DE') +"VND"
                                             }

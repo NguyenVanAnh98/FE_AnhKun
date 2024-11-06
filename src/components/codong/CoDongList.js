@@ -13,12 +13,11 @@ import {
     Box
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ManageNguoiTheo from './ManageNguoiTheo';
-import ChiTietNguoiTheo from './ChiTietNguoiTheo';
-import ChungChiNguoiTheo from './ChungChiNguoiTheo';
+import ManageCoDong from './ManageCoDong';
+import ChiTietCoDong from './ChiTietCoDong';
 
-const NguoiTheoList = () => {
-    const [nguoiTheoList, setNguoiTheoList] = useState([]);
+const CoDongList = () => {
+    const [coDongList, setCoDongList] = useState([]);
     const [selectedId, setSelectedId] = useState(null);
     const [openManage, setOpenManage] = useState(false);
     const [openChiTiet, setOpenChiTiet] = useState(false);
@@ -26,13 +25,13 @@ const NguoiTheoList = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/nguoitheo')
+        axios.get('http://localhost:8080/api/codong')
             .then(response => {
-                setNguoiTheoList(response.data);
+                setCoDongList(response.data);
             })
             .catch(error => {
                 console.error('Error fetching people:', error);
-                alert('Có lỗi xảy ra khi lấy danh sách người theo: ' + error.message);
+                alert('Có lỗi xảy ra khi lấy danh sách cổ đông: ' + error.message);
             });
     }, []);
 
@@ -55,18 +54,18 @@ const NguoiTheoList = () => {
         setOpenChiTiet(false);
     };
 
-    const handleAdd = (newNguoiTheo) => {
-        setNguoiTheoList([...nguoiTheoList, newNguoiTheo]);
+    const handleAdd = (newCoDong) => {
+        setCoDongList([...coDongList, newCoDong]);
     };
 
-    const handleUpdate = (updatedNguoiTheo) => {
-        setNguoiTheoList(nguoiTheoList.map(nguoiTheo =>
-            nguoiTheo.id === updatedNguoiTheo.id ? updatedNguoiTheo : nguoiTheo
+    const handleUpdate = (updatedCoDong) => {
+        setCoDongList(coDongList.map(coDong =>
+            coDong.id === updatedCoDong.id ? updatedCoDong : coDong
         ));
     };
 
     const handleDelete = (id) => {
-        setNguoiTheoList(nguoiTheoList.filter(nguoiTheo => nguoiTheo.id !== id));
+        setCoDongList(coDongList.filter(coDong => coDong.id !== id));
     };
 
     return (
@@ -78,7 +77,7 @@ const NguoiTheoList = () => {
                     color="textPrimary"
                     style={{ fontWeight: 'bold' }}
                 >
-                    DANH SÁCH NGƯỜI THEO
+                    DANH SÁCH CỔ ĐÔNG
                 </Typography>
             </Box>
             <Box mb={2} display="flex" justifyContent="space-between">
@@ -87,56 +86,56 @@ const NguoiTheoList = () => {
                     color="primary"
                     onClick={() => handleOpenManage(null, 'add')}
                 >
-                    Thêm Người Theo
+                    Thêm Cổ Đông
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate('/timkiemtinhtiennguoitheo')}
+                    onClick={() => navigate('/timkiemtinhtiencodong')}
                 >
-                    Chi Tiết Tính Tiền Người Theo
+                    Chi Tiết Tính Tiền Cổ Đông
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => navigate('/chungchinguoitheo')}
+                    onClick={() => navigate('/chungchicodong')}
                 >
-                    CHUNG CHI NGƯỜI THEO
+                    CHUNG CHI CỔ ĐÔNG
                 </Button>
             </Box>
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Mã Người Theo</TableCell>
+                        <TableCell>Mã Cổ Đông</TableCell>
                         <TableCell>Tên</TableCell>
                         <TableCell>Tiền Cũ</TableCell>
                         <TableCell>Hành Động</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {nguoiTheoList.length > 0 ? (
-                        nguoiTheoList.map(nguoiTheo => (
-                            <TableRow key={nguoiTheo.id}>
-                                <TableCell>{nguoiTheo.id}</TableCell>
-                                <TableCell>{nguoiTheo.name}</TableCell>
-                                <TableCell>{nguoiTheo.oldMoney}</TableCell>
+                    {coDongList.length > 0 ? (
+                        coDongList.map(coDong => (
+                            <TableRow key={coDong.id}>
+                                <TableCell>{coDong.id}</TableCell>
+                                <TableCell>{coDong.name}</TableCell>
+                                <TableCell>{coDong.oldMoney}</TableCell>
                                 <TableCell>
                                     <Button
-                                        onClick={() => handleOpenChiTiet(nguoiTheo.id)}
+                                        onClick={() => handleOpenChiTiet(coDong.id)}
                                         color="info"
                                         style={{ marginRight: 8 }}
                                     >
                                         Xem Chi Tiết
                                     </Button>
                                     <Button
-                                        onClick={() => handleOpenManage(nguoiTheo.id, 'edit')}
+                                        onClick={() => handleOpenManage(coDong.id, 'edit')}
                                         color="secondary"
                                         style={{ marginRight: 8 }}
                                     >
                                         Sửa
                                     </Button>
                                     <Button
-                                        onClick={() => handleOpenManage(nguoiTheo.id, 'delete')}
+                                        onClick={() => handleOpenManage(coDong.id, 'delete')}
                                         color="error"
                                     >
                                         Xóa
@@ -160,7 +159,7 @@ const NguoiTheoList = () => {
                 fullWidth
                 maxWidth="sm"
             >
-                <ManageNguoiTheo
+                <ManageCoDong
                     id={selectedId}
                     mode={formMode}
                     onClose={handleCloseManage}
@@ -176,7 +175,7 @@ const NguoiTheoList = () => {
                 fullWidth
                 maxWidth="sm"
             >
-                <ChiTietNguoiTheo
+                <ChiTietCoDong
                     id={selectedId}
                     onClose={handleCloseChiTiet}
                 />
@@ -185,4 +184,4 @@ const NguoiTheoList = () => {
     );
 };
 
-export default NguoiTheoList;
+export default CoDongList;

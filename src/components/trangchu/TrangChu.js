@@ -37,11 +37,21 @@ const HomePage = () => {
                 <Button
                     variant="contained"
                     color="primary"
+                    onClick={() => navigate('/codong')}
+                    style={{ width: '20%' }}
+                >
+                    Cổ Đông
+                </Button>
+                
+                <Button
+                    variant="contained"
+                    color="primary"
                     onClick={() => navigate('/loai')}
                     style={{ width: '20%' }}
                 >
                     Loại
                 </Button>
+                
                 
             </Box>
         </Container>

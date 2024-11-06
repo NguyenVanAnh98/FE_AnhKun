@@ -11,3 +11,78 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.table-bordered {
+  border: 1px solid #ccc;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Arial', sans-serif;
+}
+
+.table-bordered th, .table-bordered td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.table-bordered th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.table-bordered td {
+  font-size: 13px;
+}
+
+.table-bordered tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-bordered tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-bordered th[rowspan], .table-bordered td[rowspan] {
+  vertical-align: middle;
+}
+
+.table-bordered th[colspan], .table-bordered td[colspan] {
+  text-align: center;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+button {
+  margin-top: 10px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.text-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.text-field label {
+  color: #666;
+  font-size: 14px;
+}
+
+.text-field input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
